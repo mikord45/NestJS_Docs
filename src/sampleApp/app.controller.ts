@@ -1,14 +1,17 @@
 import { Controller, Get } from '@nestjs/common'
 import { AppService } from './app.service'
-import { of } from 'rxjs'
+import { CatsService } from 'src/cats/cats.service'
 
-@Controller(/*{ host: 'localhost2', path: '' }*/)
+@Controller('cats' /*{ host: 'localhost2', path: '' }*/)
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly catsService: CatsService,
+  ) {}
 
   @Get()
   /*async*/
-  getHello(): /*Promise<any>*/ string {
+  async getHello(): Promise<any[]> {
     /* return 5 */
     /* return of(10, 20) */
     /*
@@ -18,6 +21,8 @@ export class AppController {
 
     return promise
     */
-    return this.appService.getHello()
+    // return this.appService.getHello()
+    const list = await this.catsService.findAll()
+    return [1, 2, 3] as any[]
   }
 }

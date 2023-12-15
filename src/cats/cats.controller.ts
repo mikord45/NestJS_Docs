@@ -16,7 +16,11 @@ import {
   */
 } from '@nestjs/common'
 
-import { CreateCatDto, UpdateCatDto, ListAllEntities } from './dto/dto'
+import {
+  CreateCatDto,
+  UpdateCatDto,
+  ListAllEntities,
+} from './dto/create-cat.dto'
 // import { Response } from 'express'
 
 import { CatsService } from './cats.service'
