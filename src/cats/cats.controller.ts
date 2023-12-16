@@ -7,6 +7,10 @@ import {
   Body,
   Put,
   Delete,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  UseFilters,
   /*
   Res,
   HttpStatus,
@@ -25,7 +29,10 @@ import {
 
 import { CatsService } from './cats.service'
 import { Cat } from './interfaces/cat.interface'
+import { ForbiddenException } from 'src/forbidden.exception'
+import { HttpExceptionFilter } from 'src/http-exception.filter'
 
+// @UseFilters(HttpExceptionFilter)
 @Controller('cats')
 export class CatsController {
   constructor(private catsService: CatsService) {}
@@ -36,13 +43,30 @@ export class CatsController {
   @HttpCode(204)
   @Header('Cache-Control', 'none')
   */
+  // @UseFilters(HttpExceptionFilter)
   async create(@Body() createCatDto: CreateCatDto) {
+    throw new ForbiddenException()
     this.catsService.create(createCatDto)
   }
 
   @Get()
-  async findAll(): Promise<Cat[]> {
-    return this.catsService.findAll()
+  async findAll() /*: Promise<Cat[]>*/ {
+    try {
+      await this.catsService.findAll()
+      throw new Error('Random Cause')
+    } catch (error) {
+      // throw new ForbiddenException()
+      // throw { message: 'test123', statusCode: 404 }
+      throw new BadRequestException('Something bad happened', {
+        cause: new Error(),
+        description: 'Some error description',
+      })
+      /*throw new HttpException(
+        { error: 'This is custom message', status: HttpStatus.FORBIDDEN },
+        HttpStatus.FORBIDDEN,
+        { cause: error },
+      )*/
+    }
   }
 
   @Get(':id')
