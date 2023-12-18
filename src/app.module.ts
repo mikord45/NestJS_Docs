@@ -8,7 +8,10 @@ import {
 // import { AppService } from './sampleApp/app.service'
 import { CatsModule } from './cats/cats.module'
 import { CatsController } from './cats/cats.controller'
-import { logger /*, logger2*/ } from './logger.middleware'
+import {
+  // LoggerMiddleware,
+  logger /*, logger2, logger3*/,
+} from './logger.middleware'
 import { APP_FILTER } from '@nestjs/core'
 import { HttpExceptionFilter } from './http-exception.filter'
 import { AllExceptionsFilter } from './all-exceptions.filter'
@@ -28,7 +31,7 @@ import { AllExceptionsFilter } from './all-exceptions.filter'
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(/*logger2,*/ logger)
+      .apply(/*logger3, LoggerMiddleware, */ logger)
       /*.exclude(
         { path: 'cats', method: RequestMethod.GET },
         { path: 'cats', method: RequestMethod.POST },
@@ -41,5 +44,10 @@ export class AppModule implements NestModule {
         //   method: RequestMethod.GET,
         // },
       )
+
+    /*consumer
+      .apply(logger3, logger2, logger)
+      .forRoutes({ path: 'cats', method: RequestMethod.GET })
+    */
   }
 }
