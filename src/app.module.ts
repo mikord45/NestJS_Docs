@@ -12,9 +12,10 @@ import {
   // LoggerMiddleware,
   logger /*, logger2, logger3*/,
 } from './logger.middleware'
-import { APP_FILTER } from '@nestjs/core'
+import { APP_FILTER, APP_PIPE } from '@nestjs/core'
 import { HttpExceptionFilter } from './http-exception.filter'
 import { AllExceptionsFilter } from './all-exceptions.filter'
+import { ValidationPipe } from './validation.pipe'
 // import { SampleAppModule } from './sampleApp/sample.app.module'
 
 @Module({
@@ -23,8 +24,12 @@ import { AllExceptionsFilter } from './all-exceptions.filter'
   providers: [
     /*AppService,*/ {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
-      // useClass: AllExceptionsFilter,
+      // useClass: HttpExceptionFilter,
+      useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
     },
   ],
 })

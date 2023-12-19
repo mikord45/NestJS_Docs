@@ -6,7 +6,7 @@ import { Response } from 'express'
 export class AllExceptionsFilter extends BaseExceptionFilter {
   number: number = 0
   catch(exception: unknown, host: ArgumentsHost) {
-    this.number += 1
+    /*this.number += 1
     if (this.number % 2 == 0) {
       console.log(this.number)
       const ctx = host.switchToHttp()
@@ -17,7 +17,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         timestamp: new Date().toISOString(),
         // path: request.url,
       })
-    }
+    }*/
     super.catch(exception, host)
   }
 }

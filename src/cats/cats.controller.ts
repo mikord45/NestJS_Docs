@@ -11,6 +11,9 @@ import {
   HttpException,
   HttpStatus,
   UseFilters,
+  DefaultValuePipe,
+  // ParseIntPipe,
+  UsePipes,
   /*
   Res,
   HttpStatus,
@@ -31,6 +34,10 @@ import { CatsService } from './cats.service'
 import { Cat } from './interfaces/cat.interface'
 import { ForbiddenException } from 'src/forbidden.exception'
 import { HttpExceptionFilter } from 'src/http-exception.filter'
+import { ZodValidationPipe } from 'src/zodValidation.pipe'
+import { createCatSchema } from './validationSchemas'
+import { ValidationPipe } from 'src/validation.pipe'
+import { ParseIntPipe } from 'src/parse-int.pipe'
 
 // @UseFilters(HttpExceptionFilter)
 @Controller('cats')
@@ -44,13 +51,22 @@ export class CatsController {
   @Header('Cache-Control', 'none')
   */
   // @UseFilters(HttpExceptionFilter)
-  async create(@Body() createCatDto: CreateCatDto) {
-    throw new ForbiddenException()
+  // @UsePipes(new ZodValidationPipe(createCatSchema))
+  // @UsePipes(ValidationPipe)
+  async create(
+    @Body(/*new ValidationPipe() OR Validation Pipe*/)
+    createCatDto: CreateCatDto,
+  ) {
+    // throw new ForbiddenException()
     this.catsService.create(createCatDto)
   }
 
   @Get()
-  async findAll() /*: Promise<Cat[]>*/ {
+  async findAll(
+    @Query('limit', new DefaultValuePipe('60'), ParseIntPipe) limit: number,
+  ) /*: Promise<Cat[]>*/ {
+    const allCats = this.catsService.findAll()
+    return allCats
     try {
       await this.catsService.findAll()
       throw new Error('Random Cause')
@@ -70,7 +86,16 @@ export class CatsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: any): string {
+  findOne(
+    @Param(
+      'id',
+      /*ParseIntPipe OR new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+      })*/
+      ParseIntPipe,
+    )
+    id: number,
+  ): string {
     return `This action returns a #${id} cat`
   }
 
