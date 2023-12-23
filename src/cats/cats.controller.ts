@@ -14,6 +14,7 @@ import {
   DefaultValuePipe,
   // ParseIntPipe,
   UsePipes,
+  UseGuards,
   /*
   Res,
   HttpStatus,
@@ -38,7 +39,10 @@ import { ZodValidationPipe } from 'src/zodValidation.pipe'
 import { createCatSchema } from './validationSchemas'
 import { ValidationPipe } from 'src/validation.pipe'
 import { ParseIntPipe } from 'src/parse-int.pipe'
+import { RolesGuard } from 'src/role.guard'
+import { Roles } from 'src/roles.decorators'
 
+// @UseGuards(/*new RolesGuard()*/ RolesGuard)
 // @UseFilters(HttpExceptionFilter)
 @Controller('cats')
 export class CatsController {
@@ -53,6 +57,7 @@ export class CatsController {
   // @UseFilters(HttpExceptionFilter)
   // @UsePipes(new ZodValidationPipe(createCatSchema))
   // @UsePipes(ValidationPipe)
+  @Roles(['admin'])
   async create(
     @Body(/*new ValidationPipe() OR Validation Pipe*/)
     createCatDto: CreateCatDto,
@@ -61,6 +66,7 @@ export class CatsController {
     this.catsService.create(createCatDto)
   }
 
+  // @UseGuards(RolesGuard)
   @Get()
   async findAll(
     @Query('limit', new DefaultValuePipe('60'), ParseIntPipe) limit: number,

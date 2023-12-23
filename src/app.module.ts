@@ -12,10 +12,12 @@ import {
   // LoggerMiddleware,
   logger /*, logger2, logger3*/,
 } from './logger.middleware'
-import { APP_FILTER, APP_PIPE } from '@nestjs/core'
+import { simpleAuthentication } from './simple-authentication.middleware'
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core'
 import { HttpExceptionFilter } from './http-exception.filter'
 import { AllExceptionsFilter } from './all-exceptions.filter'
 import { ValidationPipe } from './validation.pipe'
+import { RolesGuard } from './role.guard'
 // import { SampleAppModule } from './sampleApp/sample.app.module'
 
 @Module({
@@ -31,12 +33,16 @@ import { ValidationPipe } from './validation.pipe'
       provide: APP_PIPE,
       useClass: ValidationPipe,
     },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(/*logger3, LoggerMiddleware, */ logger)
+      .apply(/*logger3, LoggerMiddleware, */ simpleAuthentication, logger)
       /*.exclude(
         { path: 'cats', method: RequestMethod.GET },
         { path: 'cats', method: RequestMethod.POST },
