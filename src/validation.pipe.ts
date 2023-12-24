@@ -18,7 +18,6 @@ export class ValidationPipe implements PipeTransform {
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
   async transform(value: any, { metatype }: ArgumentMetadata) {
-    console.log('test2 CUSTOM VALIDATION PIPE')
     if (!metatype || !this.toValidate(metatype)) {
       return value
     }

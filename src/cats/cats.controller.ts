@@ -15,6 +15,7 @@ import {
   // ParseIntPipe,
   UsePipes,
   UseGuards,
+  UseInterceptors,
   /*
   Res,
   HttpStatus,
@@ -41,9 +42,13 @@ import { ValidationPipe } from 'src/validation.pipe'
 import { ParseIntPipe } from 'src/parse-int.pipe'
 import { RolesGuard } from 'src/role.guard'
 import { Roles } from 'src/roles.decorators'
+import { LoggingInterceptor } from 'src/logging.interceptor'
+import { CacheInterceptor } from 'src/cache.interceptor'
+import { TimeoutInterceptor } from 'src/timeout.interceptor'
 
 // @UseGuards(/*new RolesGuard()*/ RolesGuard)
 // @UseFilters(HttpExceptionFilter)
+// @UseInterceptors(/*new LoggingInterceptor()*/ LoggingInterceptor)
 @Controller('cats')
 export class CatsController {
   constructor(private catsService: CatsService) {}
@@ -92,6 +97,7 @@ export class CatsController {
   }
 
   @Get(':id')
+  @UseInterceptors(CacheInterceptor)
   findOne(
     @Param(
       'id',
@@ -106,7 +112,11 @@ export class CatsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
+  async update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
+    async function delay(ms: number) {
+      return new Promise((resolve) => setTimeout(resolve, ms))
+    }
+    await delay(6000)
     return `This action updates a #${id} cat`
   }
 

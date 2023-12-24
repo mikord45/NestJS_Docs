@@ -13,11 +13,15 @@ import {
   logger /*, logger2, logger3*/,
 } from './logger.middleware'
 import { simpleAuthentication } from './simple-authentication.middleware'
-import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core'
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core'
 import { HttpExceptionFilter } from './http-exception.filter'
 import { AllExceptionsFilter } from './all-exceptions.filter'
 import { ValidationPipe } from './validation.pipe'
 import { RolesGuard } from './role.guard'
+import { LoggingInterceptor } from './logging.interceptor'
+import { TransformInterceptor } from './transform.interceptor'
+import { ErrorsInterceptor } from './errors.interceptor'
+import { TimeoutInterceptor } from './timeout.interceptor'
 // import { SampleAppModule } from './sampleApp/sample.app.module'
 
 @Module({
@@ -36,6 +40,22 @@ import { RolesGuard } from './role.guard'
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorsInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TimeoutInterceptor,
     },
   ],
 })
