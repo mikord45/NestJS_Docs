@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core/services/reflector.service'
 import { Observable } from 'rxjs'
-import { Roles } from './roles.decorators'
+import { Roles } from '../decorators/roles.decorators'
 
 const matchRoles = (routeRoles: string[], userRoles: string[]): boolean => {
   return routeRoles.some((routeRole) => userRoles.includes(routeRole))

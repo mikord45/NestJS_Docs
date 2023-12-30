@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { HttpExceptionFilter } from './http-exception.filter'
-import { ValidationPipe } from './validation.pipe'
-import { RolesGuard } from './role.guard'
-import { LoggingInterceptor } from './logging.interceptor'
+import { HttpExceptionFilter } from './exceptionFilters/http-exception.filter'
+import { ValidationPipe } from './pipes/validation.pipe'
+import { RolesGuard } from './guards/role.guard'
+import { LoggingInterceptor } from './interceptors/logging.interceptor'
 // import { logger } from './logger.middleware'
 
 async function bootstrap() {

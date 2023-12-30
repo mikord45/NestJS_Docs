@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 
-import { CatsService } from './cats/cats.service'
+import { CatsService } from '../cats/cats.service'
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
