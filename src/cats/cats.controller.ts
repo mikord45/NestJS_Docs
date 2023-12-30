@@ -16,6 +16,7 @@ import {
   UsePipes,
   UseGuards,
   UseInterceptors,
+  ValidationPipe,
   /*
   Res,
   HttpStatus,
@@ -38,13 +39,15 @@ import { ForbiddenException } from 'src/forbidden.exception'
 import { HttpExceptionFilter } from 'src/http-exception.filter'
 import { ZodValidationPipe } from 'src/zodValidation.pipe'
 import { createCatSchema } from './validationSchemas'
-import { ValidationPipe } from 'src/validation.pipe'
+// import { ValidationPipe } from 'src/validation.pipe'
 import { ParseIntPipe } from 'src/parse-int.pipe'
 import { RolesGuard } from 'src/role.guard'
 import { Roles } from 'src/roles.decorators'
 import { LoggingInterceptor } from 'src/logging.interceptor'
 import { CacheInterceptor } from 'src/cache.interceptor'
 import { TimeoutInterceptor } from 'src/timeout.interceptor'
+import { User } from 'src/user.decorator'
+import { Auth } from 'src/auth.decorator'
 
 // @UseGuards(/*new RolesGuard()*/ RolesGuard)
 // @UseFilters(HttpExceptionFilter)
@@ -73,6 +76,7 @@ export class CatsController {
 
   // @UseGuards(RolesGuard)
   @Get()
+  // @Auth('admin')
   async findAll(
     @Query('limit', new DefaultValuePipe('60'), ParseIntPipe) limit: number,
   ) /*: Promise<Cat[]>*/ {
@@ -121,8 +125,12 @@ export class CatsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `This action removes a #${id} cat`
+  remove(
+    @Param('id') id: string,
+    @User('name' /*, new ValidationPipe({ validateCustomDecorators: true })*/) // it's ValidationPipe from nestjs/common
+    username: string,
+  ) {
+    return `This action removes a #${id} cat - by ${username}`
   }
 
   /*
