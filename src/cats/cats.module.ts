@@ -9,5 +9,5 @@ import { CatsService } from './cats.service'
   exports: [CatsService],
 })
 export class CatsModule {
-  //   constructor(private catsService: CatsService) {}
+  //   constructor(private catsService: CatsService) {} // example of injection in module's constructor
 }

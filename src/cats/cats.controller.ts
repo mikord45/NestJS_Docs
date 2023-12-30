@@ -8,16 +8,15 @@ import {
   Put,
   Delete,
   BadRequestException,
-  HttpException,
-  HttpStatus,
-  UseFilters,
   DefaultValuePipe,
-  // ParseIntPipe,
+  UseInterceptors,
+  /*
+  ValidationPipe,
   UsePipes,
   UseGuards,
-  UseInterceptors,
-  ValidationPipe,
-  /*
+  ParseIntPipe,
+  HttpException,
+  UseFilters,
   Res,
   HttpStatus,
   HttpCode,
@@ -29,29 +28,29 @@ import {
 import {
   CreateCatDto,
   UpdateCatDto,
-  ListAllEntities,
+  /*ListAllEntities,*/
 } from './dto/create-cat.dto'
-// import { Response } from 'express'
 
 import { CatsService } from './cats.service'
-import { Cat } from './interfaces/cat.interface'
-import { ForbiddenException } from 'src/exceptions/forbidden.exception'
-import { HttpExceptionFilter } from 'src/exceptionFilters/http-exception.filter'
-import { ZodValidationPipe } from 'src/pipes/zodValidation.pipe'
-import { createCatSchema } from './validationSchemas'
-// import { ValidationPipe } from 'src/validation.pipe'
 import { ParseIntPipe } from 'src/pipes/parse-int.pipe'
-import { RolesGuard } from 'src/guards/role.guard'
 import { Roles } from 'src/decorators/roles.decorators'
-import { LoggingInterceptor } from 'src/interceptors/logging.interceptor'
 import { CacheInterceptor } from 'src/interceptors/cache.interceptor'
-import { TimeoutInterceptor } from 'src/interceptors/timeout.interceptor'
 import { User } from 'src/decorators/user.decorator'
-import { Auth } from 'src/decorators/auth.decorator'
+// import { Response } from 'express'
+// import { ICat } from './interfaces/cat.interface'
+// import { ForbiddenException } from 'src/exceptions/forbidden.exception'
+// import { HttpExceptionFilter } from 'src/exceptionFilters/http-exception.filter'
+// import { ZodValidationPipe } from 'src/pipes/zodValidation.pipe'
+// import { createCatSchema } from './validationSchemas'
+// import { ValidationPipe } from 'src/validation.pipe'
+// import { RolesGuard } from 'src/guards/role.guard'
+// import { LoggingInterceptor } from 'src/interceptors/logging.interceptor'
 
-// @UseGuards(/*new RolesGuard()*/ RolesGuard)
-// @UseFilters(HttpExceptionFilter)
-// @UseInterceptors(/*new LoggingInterceptor()*/ LoggingInterceptor)
+// import { Auth } from 'src/decorators/auth.decorator'
+
+// @UseGuards(/*new RolesGuard()*/ RolesGuard) // Guards Usage Example - Controller level
+// @UseFilters(HttpExceptionFilter) // Exception Filters Usage Example - Controller level
+// @UseInterceptors(/*new LoggingInterceptor()*/ LoggingInterceptor) // Interceptors Usage Example - Controller level
 @Controller('cats' /*{ host: 'localhost2', path: '' }*/)
 export class CatsController {
   constructor(private catsService: CatsService) {}
@@ -62,37 +61,38 @@ export class CatsController {
   @HttpCode(204)
   @Header('Cache-Control', 'none')
   */
-  // @UseFilters(HttpExceptionFilter)
-  // @UsePipes(new ZodValidationPipe(createCatSchema))
-  // @UsePipes(ValidationPipe)
+  // @UseFilters(HttpExceptionFilter) // Exception Filters Usage Example - Method level
+  // @UsePipes(new ZodValidationPipe(createCatSchema)) // Pipes Usage Example - Method level
+  // @UsePipes(ValidationPipe) // Pipes Usage Example - Method level
   @Roles(['admin'])
   async create(
-    @Body(/*new ValidationPipe() OR Validation Pipe*/)
+    @Body(/*new ValidationPipe() OR Validation Pipe*/) // Pipes Usage Example - Parameter level
     createCatDto: CreateCatDto,
   ) {
-    // throw new ForbiddenException()
+    // throw new ForbiddenException() // Throwing custom exception example
     this.catsService.create(createCatDto)
   }
 
   // @UseGuards(RolesGuard)
   @Get()
-  // @Auth('admin')
+  // @Auth('admin') // Composed Decorator Example - Method level
   async findAll(
     @Query('limit', new DefaultValuePipe('60'), ParseIntPipe) limit: number,
-  ) /*: Promise<Cat[]>*/ {
+  ) /*: Promise<ICat[]>*/ {
     const allCats = this.catsService.findAll()
     return allCats
     try {
-      await this.catsService.findAll()
-      throw new Error('Random Cause')
+      await this.catsService.findAll() // example of handling async operations
+      throw new Error('Random Cause') // example of handling generic errors
     } catch (error) {
-      // throw new ForbiddenException()
-      // throw { message: 'test123', statusCode: 404 }
+      // throw new ForbiddenException() // Throwing custom exception example
+      // throw { message: 'test123', statusCode: 404 } // Throwing object, that fullfills type requirements
       throw new BadRequestException('Something bad happened', {
+        // Throwing error imported from @nestjs/common - 1st way
         cause: new Error(),
         description: 'Some error description',
       })
-      /*throw new HttpException(
+      /*throw new HttpException(  // Throwing error imported from @nestjs/common - 2nd way
         { error: 'This is custom message', status: HttpStatus.FORBIDDEN },
         HttpStatus.FORBIDDEN,
         { cause: error },
@@ -105,6 +105,7 @@ export class CatsController {
   findOne(
     @Param(
       'id',
+      // Example of using pipe with parameter decorator
       /*ParseIntPipe OR new ParseIntPipe({
         errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
       })*/
@@ -138,7 +139,7 @@ export class CatsController {
   @Delete(':id')
   remove(
     @Param('id') id: string,
-    @User('name' /*, new ValidationPipe({ validateCustomDecorators: true })*/) // it's ValidationPipe from nestjs/common
+    @User('name' /*, new ValidationPipe({ validateCustomDecorators: true })*/) // it's ValidationPipe from nestjs/common // Example of using pipe with custom parameter decorator
     username: string,
   ) {
     return `This action removes a #${id} cat - by ${username}`
