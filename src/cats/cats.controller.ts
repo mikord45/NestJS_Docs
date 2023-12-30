@@ -52,7 +52,7 @@ import { Auth } from 'src/decorators/auth.decorator'
 // @UseGuards(/*new RolesGuard()*/ RolesGuard)
 // @UseFilters(HttpExceptionFilter)
 // @UseInterceptors(/*new LoggingInterceptor()*/ LoggingInterceptor)
-@Controller('cats')
+@Controller('cats' /*{ host: 'localhost2', path: '' }*/)
 export class CatsController {
   constructor(private catsService: CatsService) {}
 
@@ -112,6 +112,17 @@ export class CatsController {
     )
     id: number,
   ): string {
+    // examples, what might be returned: value (complex one too - i.e. Array), observable, promise
+    /* return 5 */
+    /* return [1, 2, 3] as any[] */
+    /* return of(10, 20) */
+    /*
+    const promise = new Promise((res, rej) => {
+      res('XD')
+    })
+
+    return promise
+    */
     return `This action returns a #${id} cat`
   }
 

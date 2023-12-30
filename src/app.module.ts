@@ -4,8 +4,6 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common'
-// import { AppController } from './sampleApp/app.controller'
-// import { AppService } from './sampleApp/app.service'
 import { CatsModule } from './cats/cats.module'
 import { CatsController } from './cats/cats.controller'
 import {
@@ -22,10 +20,9 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor'
 import { TransformInterceptor } from './interceptors/transform.interceptor'
 import { ErrorsInterceptor } from './interceptors/errors.interceptor'
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor'
-// import { SampleAppModule } from './sampleApp/sample.app.module'
 
 @Module({
-  imports: [CatsModule /*, SampleAppModule*/],
+  imports: [CatsModule],
   // controllers: [AppController],
   providers: [
     /*AppService,*/ {
