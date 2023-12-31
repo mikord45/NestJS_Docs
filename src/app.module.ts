@@ -20,11 +20,19 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor'
 import { TransformInterceptor } from './interceptors/transform.interceptor'
 import { ErrorsInterceptor } from './interceptors/errors.interceptor'
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor'
+import { CatsService } from './cats/cats.service'
+import { AppController } from './app.controller'
+
+// const mockCatsService = {}
 
 @Module({
   imports: [CatsModule],
-  // controllers: [AppController],
   providers: [
+    // controllers look for a provider, that is in the as close as possible module, from the controller, that requests it
+    // {
+    //   provide: CatsService,
+    //   useValue: mockCatsService,
+    // },
     /*AppService,*/ {
       provide: APP_FILTER,
       // useClass: HttpExceptionFilter,
@@ -55,6 +63,7 @@ import { TimeoutInterceptor } from './interceptors/timeout.interceptor'
       useClass: TimeoutInterceptor,
     },
   ],
+  controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

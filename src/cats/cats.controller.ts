@@ -10,6 +10,7 @@ import {
   BadRequestException,
   DefaultValuePipe,
   UseInterceptors,
+  Inject,
   /*
   ValidationPipe,
   UsePipes,
@@ -36,6 +37,7 @@ import { ParseIntPipe } from 'src/pipes/parse-int.pipe'
 import { Roles } from 'src/decorators/roles.decorators'
 import { CacheInterceptor } from 'src/interceptors/cache.interceptor'
 import { User } from 'src/decorators/user.decorator'
+import { connectionToken } from 'src/utils/constants'
 // import { Response } from 'express'
 // import { ICat } from './interfaces/cat.interface'
 // import { ForbiddenException } from 'src/exceptions/forbidden.exception'
@@ -53,7 +55,10 @@ import { User } from 'src/decorators/user.decorator'
 // @UseInterceptors(/*new LoggingInterceptor()*/ LoggingInterceptor) // Interceptors Usage Example - Controller level
 @Controller('cats' /*{ host: 'localhost2', path: '' }*/)
 export class CatsController {
-  constructor(private catsService: CatsService) {}
+  constructor(
+    private catsService: CatsService,
+    @Inject(connectionToken) private connection: any,
+  ) {}
 
   @Post()
   /*
@@ -101,7 +106,7 @@ export class CatsController {
   }
 
   @Get(':id')
-  @UseInterceptors(CacheInterceptor)
+  // @UseInterceptors(CacheInterceptor)
   findOne(
     @Param(
       'id',
@@ -124,7 +129,8 @@ export class CatsController {
 
     return promise
     */
-    return `This action returns a #${id} cat`
+    const connectionInfo = this.connection
+    return `This action returns a #${id} cat - ${connectionInfo}`
   }
 
   @Put(':id')
