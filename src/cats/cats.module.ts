@@ -5,6 +5,8 @@ import { CatsService } from './cats.service'
 import { connectionToken } from '../utils/constants'
 import { connection } from '../common/connection'
 
+import { delay } from 'src/common/utils'
+
 // const mockCatsService = {}
 
 @Global()
@@ -19,12 +21,12 @@ import { connection } from '../common/connection'
     // useFactory example
     {
       provide: connectionToken,
-      useFactory: (
+      useFactory: async (
         provider1: string,
         provider2?: string,
         provider3?: string,
       ) => {
-        console.log(`${provider1} - ${provider2 || ''} - ${provider3 || ''}`)
+        await delay(1000)
         return `${provider1} - ${provider2 || ''} - ${provider3 || ''}`
       },
       inject: [
