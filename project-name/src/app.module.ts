@@ -22,11 +22,36 @@ import { ErrorsInterceptor } from './interceptors/errors.interceptor'
 import { TimeoutInterceptor } from './interceptors/timeout.interceptor'
 import { CatsService } from './cats/cats.service'
 import { AppController } from './app.controller'
+import { ClientsModule, Transport } from '@nestjs/microservices'
 
 // const mockCatsService = {}
 
 @Module({
-  imports: [CatsModule],
+  imports: [
+    CatsModule,
+    ClientsModule.register([
+      {
+        name: 'RABBIT_MICROSERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://localhost:5672'],
+          queue: 'cats_queue',
+          queueOptions: {
+            durable: false,
+          },
+        },
+      },
+    ]),
+    ClientsModule.register([
+      {
+        name: 'TCP_MICROSERVICE',
+        transport: Transport.TCP,
+        options: {
+          port: 3001,
+        },
+      },
+    ]),
+  ],
   providers: [
     // controllers look for a provider, that is in the as close as possible module, from the controller, that requests it
     // {
